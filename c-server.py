@@ -14,6 +14,7 @@ class MasterServerProtocol(LineReceiver):
         self.buffer = {}
         self.telemetryProtocol = None #Set by the factory
         self.telemetryMode = "R"
+        self.mapInfo = False
         #"R" = request:
         #"D" = Forward them as they arrive
 
@@ -35,8 +36,15 @@ class MasterServerProtocol(LineReceiver):
     def setupMap(self):
         self.mapInfo = parseMap.KMLHandler()
 
-    def closestPath(selfs,lat,lon):
-        print lat, lon
+    def closestPathKey(self,lat,lon):
+        if self.mapInfo:
+            key = self.mapInfo.get_closest_path_key(lat,lon)
+            print "KEY", key
+        else:
+            self.setupMap()
+            self.closestPathKey(lat,lon)
+
+
 
     def lineReceived(self, line):#
         #Do protocol here
@@ -49,8 +57,20 @@ class MasterServerProtocol(LineReceiver):
         if jLine:
             msg = None
             if 'Map_Request' in jLine:
-                method = self.command_map['Map_Request'][jLine['Map_Request']][0]
-                self.sendLine(repr(method) + '\n')
+                method = jLine['Map_Request']['method']
+                kwargs = jLine['Map_Request']['args']
+                method_to_call = False
+                try:
+                    method_to_call = getattr(self, method)
+                except AttributeError:
+                    msg = {'Error':repr(AttributeError)}
+                    self.sendLine(json.dumps(msg))
+                    return 0
+                if method_to_call:
+                    msg = method_to_call(**kwargs)
+                    self.sendLine(json.dumps(msg))
+                    return 0
+
 
 
             elif 'Telemetry_Request' in jLine:
