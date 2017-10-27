@@ -34,7 +34,11 @@ class KMLHandler():
         self.polygons = []
         self.polydict = {}
         #self.get_polygons()
-        self.get_polygons2()
+        #self.get_polygons2() #changed to load_polygons
+        self.load_polygons()
+
+    def paths_in_radius(self, lat, lon, meters):
+        print "TEST", self.polydict
 
     def point_in_path(self, point_lat, point_lon, path):
         x = [p[0] for p in path]
@@ -45,7 +49,7 @@ class KMLHandler():
     
         max_y = max(y)
         min_y = min(y)
-        print max_x, min_x, point_lon, max_y, min_y, point_lat
+        #FDOprint max_x, min_x, point_lon, max_y, min_y, point_lat
         if point_lon <= max_x and point_lon >= min_x:
             return point_lat <= max_y and point_lat >= min_y
         #    return 1
@@ -59,7 +63,7 @@ class KMLHandler():
             if 'path' in key:
                 #put a continue here if the lat/lon is in
                 if self.point_in_path(lat,lon,self.polydict[key]):
-                    print "continue"
+                    #FDOprint "continue"
                     continue
                 for point in self.polydict[key]:
                     dif_lat = abs(lat - point[1])
@@ -99,20 +103,22 @@ class KMLHandler():
         pass
     
     
-    def get_polygons2(self):
-        print 'placemark test'
+    def load_polygons(self):
+        #FDOprint 'placemark test'
         for pm in self.doc.Placemark:
             coords = []
-            print pm.name
+            #FDOprint pm.name
             if hasattr(pm, 'Polygon'):
                 poly_str = repr(pm.Polygon.outerBoundaryIs.LinearRing.coordinates)
                 poly = ''.join(c for c in poly_str if (c.isdigit() or c == ' ' or c == ',' or c == '.' or c == '-'))
                 coords = poly.split(' ')
                 coords = [x.split(',') for x in coords]
                 coords = [[float(x[0]),float(x[1]),float(x[2])] for x in coords if len(x) > 1]
-                self.polydict[repr(pm.name)] = coords
+                self.polydict[repr(pm.name)] = {}
+                self.polydict[repr(pm.name)]['points'] = coords
             if hasattr(pm, 'Point'):
-                print pm.Point.coordinates
+                pass
+                #FDOprint pm.Point.coordinates
             
     #print 'placemark', PG.Placemark.name
                     #for PM in PG.Placemark.iterchildren():
@@ -143,7 +149,7 @@ class KMLHandler():
 
         if top > bottom or left > right:
             endsponts = []
-            print 'No intersection'
+            #FDOprint 'No intersection'
 
         elif top == bottom and left == right:
             endpoints.append(left)
@@ -154,7 +160,7 @@ class KMLHandler():
             endpoints.append(bottom)
             endpoints.append(right)
             endpoints.append(top)
-            print 'Segment Intersection'
+            #FDOprint 'Segment Intersection'
         return endpoints
 
 
@@ -221,12 +227,14 @@ class KMLHandler():
             #    print 'len b', len(b)
             #    segments.append([polygon[0],polygon[-1],b])
     
-        print 'segments', segments
+        #FDOprint 'segments', segments
         return segments
 
 
 
-#a = KMLHandler()
+if __name__ == '__main__':
+    a = KMLHandler()
+    a.paths_in_radius(38.967163,-104.819837,100)
 #path_key = a.get_closest_path_key(38.967163,-104.819837)
 #path = a.polydict[path_key]
 #print path
