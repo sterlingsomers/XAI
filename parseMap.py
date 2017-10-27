@@ -5,6 +5,8 @@ import itertools
 import math
 #import numpy
 
+import json
+
 #kml_file = path.join('destination-with-mountains.kml')
 
 #with open(kml_file) as f:
@@ -26,7 +28,7 @@ import math
 
 class KMLHandler():
     def __init__(self, kml_file_path=''):
-        self.kml_file = path.join('path-and-mountains2.kml')
+        self.kml_file = path.join('path-and-mountains3.kml')
         #self.kml_file = path.join('path-1.kml')
         #self.kml_file = path.join('destination-with-mountains.kml')
         with open(self.kml_file) as f:
@@ -114,11 +116,19 @@ class KMLHandler():
                 coords = poly.split(' ')
                 coords = [x.split(',') for x in coords]
                 coords = [[float(x[0]),float(x[1]),float(x[2])] for x in coords if len(x) > 1]
-                self.polydict[repr(pm.name)] = {}
-                self.polydict[repr(pm.name)]['points'] = coords
+                #name_str = json.dumps(pm.name)
+                print type(pm.name.text)
+                #name = json.dumps(pm.name.text)
+                self.polydict[pm.name.text] = {}
+                self.polydict[pm.name.text]["points"] = coords
+                #self.polydict[repr(pm.name)]['descriptoin'] = pm.description
+            if hasattr(pm, "description"):
+                #name = json.dumps(pm.name.text)
+                self.polydict[pm.name.text]["description"] = eval(pm.description.text)
             if hasattr(pm, 'Point'):
                 pass
                 #FDOprint pm.Point.coordinates
+        self.polydict = json.dumps(self.polydict)
             
     #print 'placemark', PG.Placemark.name
                     #for PM in PG.Placemark.iterchildren():
