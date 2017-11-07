@@ -22,6 +22,13 @@ class MasterServerProtocol(LineReceiver):
                             'Telemetry_Request':{'get_item':'self.sendLine(json.dumps(self.buffer[jLine[\'Telemetry_Request\'][\'get_item\']))'},
                             'Server_Request':{'set_mode':'self.telemetryMode = jLine[\'Server_Request\'][\'set_mode\']'}}
 
+    def getBearingAndDistance(self,lat1,lon1,lat2,lon2):
+        if self.mapInfo:
+            return self.mapInfo.get_bearing_and_distance(lat1,lon1,lat2,lon2)
+        else:
+            self.setupMap()
+            return self.mapInfo.get_bearing_and_distance(lat1,lon1,lat2,lon2)
+
 
 
     def connectionMade(self):
@@ -44,6 +51,26 @@ class MasterServerProtocol(LineReceiver):
             self.setupMap()
             self.closestPathKey(lat,lon)
 
+    def getClosestPathCentroid(self,lat,lon):
+        pass
+
+    def pathInRadius(self,lat,lon,meters=1000,exclude_list=[]):
+        if self.mapInfo:
+            #value should be list
+            value = self.mapInfo.paths_in_radius(lat,lon,meters,exclude_list)
+            #r_dict = {"values":value}
+            #something a little richer
+            if value:
+                r_dict = self.mapInfo.get_enriched_paths_by_names(lat,lon,value)
+                print "R_DICT", r_dict
+                print "dumps", json.dumps(r_dict)
+                print "asdf"
+                self.sendLine(json.dumps(r_dict))
+        else:
+            self.setupMap()
+            self.pathInRadius(lat,lon,meters,exclude_list)#self.sendLine(json.dumps(err))
+
+
 
 
     def lineReceived(self, line):#
@@ -53,6 +80,7 @@ class MasterServerProtocol(LineReceiver):
             jLine = json.loads(line)
         except ValueError:
             print 'Line', line, 'is not JSON'
+            return 0
 
         if jLine:
             msg = None
@@ -84,7 +112,8 @@ class MasterServerProtocol(LineReceiver):
 
             elif 'Forward_Message' in jLine:
                 msg = jLine['Forward_Message']
-                self.udpProtocol.transport.write(msg.encode('UTF-8'))
+                msg = msg# + "\r"
+                self.udpProtocol.transport.write(msg)#.encode('UTF-8'))
 
 
 
