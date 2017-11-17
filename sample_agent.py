@@ -82,7 +82,7 @@ while 1:
 
 
 #Simulation loop
-for i in range(3):
+for i in range(5):
 
 
 
@@ -100,6 +100,8 @@ for i in range(3):
     data = data[:index+1]
     data = json.loads(data)
     #just pick the first path (just cause)
+    if "Error" in data:
+        break
     path = data.keys()[0]
     used_paths.append(path)
     current_imagined_lat = data[path]['centroid'][0]

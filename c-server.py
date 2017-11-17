@@ -58,17 +58,21 @@ class MasterServerProtocol(LineReceiver):
         if self.mapInfo:
             #value should be list
             value = self.mapInfo.paths_in_radius(lat,lon,meters,exclude_list)
+            print "pathInRadius value", value
             #r_dict = {"values":value}
             #something a little richer
             if value:
                 r_dict = self.mapInfo.get_enriched_paths_by_names(lat,lon,value)
-                print "R_DICT", r_dict
-                print "dumps", json.dumps(r_dict)
-                print "asdf"
-                self.sendLine(json.dumps(r_dict))
+                #print "R_DICT", r_dict
+                #print "dumps", json.dumps(r_dict)
+                #print "asdf"
+                print "pathInRadius r_dict", r_dict
+                return r_dict #self.sendLine(json.dumps(r_dict))
+            else:
+                return {"Error":"No Paths "}
         else:
             self.setupMap()
-            self.pathInRadius(lat,lon,meters,exclude_list)#self.sendLine(json.dumps(err))
+            return self.pathInRadius(lat,lon,meters,exclude_list)#self.sendLine(json.dumps(err))
 
 
 
@@ -96,6 +100,7 @@ class MasterServerProtocol(LineReceiver):
                     return 0
                 if method_to_call:
                     msg = method_to_call(**kwargs)
+                    print "send33", msg, "from", method
                     self.sendLine(json.dumps(msg))
                     return 0
 
@@ -127,7 +132,14 @@ class UDPClient(DatagramProtocol):
 
     def datagramReceived(self, datagram, addr):
         print "Datagram received", repr(datagram)
-        self.master.sendLine(datagram) #untested
+        #Convert the datagram into JSON
+        if datagram[0] == '(':
+            datagram = eval(datagram)
+            #Now it should be a tuple
+            r_dict = {datagram[0]: list(datagram[1:])}
+        print "Sending", repr(r_dict)
+        self.master.sendLine(json.dumps(r_dict))
+        #self.master.sendLine(datagram) #untested
 
 
 class TelemetryClientFactory(ClientFactory):
