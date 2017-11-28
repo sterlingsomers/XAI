@@ -193,8 +193,8 @@ class KMLHandler():
             if path in exclude_list:
                 continue
             for point in self.polydict[path]['points']:
-                #print "piont", point
-                distance_to_point = self.get_bearing_and_distance(lat,lon,point[1],point[0])['distance']
+                #print "piont", point, self.polydict[path][point]['lat']
+                distance_to_point = self.get_bearing_and_distance(lat,lon,self.polydict[path]["points"][point]['lat'],self.polydict[path]["points"][point]['lon'])['distance']
                 #print "distance to point", distance_to_point
                 if distance_to_point <= meters:
                     paths.append(path)
@@ -283,7 +283,23 @@ class KMLHandler():
                 #FDOprint type(pm.name.text)
                 #name = json.dumps(pm.name.text)
                 self.polydict[pm.name.text] = {}
-                self.polydict[pm.name.text]["points"] = coords
+
+                #self.polydict[pm.name.text]["points"] = coords
+                #need to expand that so that each point has a unique key
+                #this is actually a bad place to expland because it's useful.
+                #I should write a way to expand any list
+
+                #could do the following
+                #{"points": {"point-0": {"lat":x, "lon":y}}} would make more sense
+                self.polydict[pm.name.text]["points"] = {}
+                for n in range(len(coords)):
+                    self.polydict[pm.name.text]["points"]["point-" + repr(n)] = {"lon":coords[n][0], "lat":coords[n][1]}
+                #for n in range(len(coords)):
+                #    self.polydict[pm.name.text]["points"]["point-" + repr(n) + "-lon"] = coords[n][0]
+                #    self.polydict[pm.name.text]["points"]["point-" + repr(n) + "-lat"] = coords[n][1]
+                #self.polydict[pm.name.text]["points"]["number-of-points"][len(coords)+1]
+                #print self.polydict
+#
                 #self.polydict[repr(pm.name)]['descriptoin'] = pm.description
             if hasattr(pm, "description"):
                 #name = json.dumps(pm.name.text)

@@ -31,10 +31,10 @@ messages = []
 #forwarded to mavsim
 
 
-messages.append(compose_message("Forward_Message","('FLIGHT', 'CLEAR_MISSION')"))
-messages.append(compose_message("Forward_Message","('FLIGHT', 'SET_MISSION_COUNT', 100)"))
+messages.append(compose_message("forward_message","('FLIGHT', 'CLEAR_MISSION')"))
+messages.append(compose_message("forward_message","('FLIGHT', 'SET_MISSION_COUNT', 100)"))
 for x in waypoints:
-    messages.append(compose_message("Forward_Message",str(x)))
+    messages.append(compose_message("forward_message",str(x)))
 
 
 print messages
@@ -107,7 +107,7 @@ for i in range(5):
     current_imagined_lat = data[path]['centroid'][0]
     current_imagined_lon = data[path]['centroid'][1]
 
-    msg = compose_message("Forward_Message","('FLIGHT', 'SET_MISSION_ITEM', " + repr(mission_item) + ", 0, 3, 16, 0.0, 0.0, 0.0, 0.0, " + repr(current_imagined_lat) + ", " + repr(current_imagined_lon) + ", 50.0, 1, 0)")
+    msg = compose_message("forward_message","('FLIGHT', 'SET_MISSION_ITEM', " + repr(mission_item) + ", 0, 3, 16, 0.0, 0.0, 0.0, 0.0, " + repr(current_imagined_lat) + ", " + repr(current_imagined_lon) + ", 50.0, 1, 0)")
     print 'sending', msg
     sock.sendall(msg)
 

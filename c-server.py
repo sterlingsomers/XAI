@@ -9,7 +9,7 @@ import parseMap
 import time
 
 class MasterServerProtocol(LineReceiver):
-
+    delimiter = '\n'
     def __init__(self):
         self.buffer = {}
         self.telemetryProtocol = None #Set by the factory
@@ -74,11 +74,31 @@ class MasterServerProtocol(LineReceiver):
             self.setupMap()
             return self.pathInRadius(lat,lon,meters,exclude_list)#self.sendLine(json.dumps(err))
 
-
-
+    def do_dict(self,data):
+        '''There's probably a better way to walk the dictionary.'''
+        r_list = []
+        if isinstance(data, dict):
+            for k, v in data.iteritems():
+                if isinstance(k,str) or isinstance(k,unicode):
+                    if not k[0:3] == 'ppp':
+                        print "adding k", k
+                        r_list.append(k.encode('UTF-8'))
+                if isinstance(v, dict):
+                    print "recursing v", v
+                    r_list = r_list + self.do_dict(v)
+                else:
+                    if isinstance(v,str) or isinstance(v,unicode):
+                        print "adding v", v
+                        r_list.append(v.encode('UTF-8'))
+                    else:
+                        print "adding v", v
+                        r_list.append(v)
+            return r_list
+        return r_list
 
     def lineReceived(self, line):#
         #Do protocol here
+        print "LINE", line
         jLine = None
         try:
             jLine = json.loads(line)
@@ -115,10 +135,24 @@ class MasterServerProtocol(LineReceiver):
             elif 'Server_Request' in jLine:
                 eval(self.command_map['Server_Request'][jLine['Server_Request']])
 
-            elif 'Forward_Message' in jLine:
+            elif 'Forward_Message' in jLine or 'forward_message' in jLine:
                 msg = jLine['Forward_Message']
-                msg = msg# + "\r"
-                self.udpProtocol.transport.write(msg)#.encode('UTF-8'))
+
+                new_message = ()
+                #new_message = (msg.keys()[0].upper().encode('UTF-8'),)
+                messages = self.do_dict(msg)
+                for x in messages:
+                    new_message = new_message + (x,)
+                #new_message = new_message + (self.do_dict(msg),)
+                print "new_message", new_message
+                #new_message = ()
+                #new_message = new_message + (msg.keys()[0].upper().encode('UTF-8'),)
+                #new_message = new_message + (msg[msg.keys()[0]].encode('UTF-8'),)
+
+                ##msg = msg# + "\r"
+                new_message = repr(new_message) #+ "\r"
+                #print "new_message", new_message
+                self.udpProtocol.transport.write(new_message)#.encode('UTF-8'))
 
 
 
@@ -135,10 +169,13 @@ class UDPClient(DatagramProtocol):
         #Convert the datagram into JSON
         if datagram[0] == '(':
             datagram = eval(datagram)
+            print "DATAGRAM", datagram
             #Now it should be a tuple
-            r_dict = {datagram[0]: list(datagram[1:])}
-        print "Sending", repr(r_dict)
-        self.master.sendLine(json.dumps(r_dict))
+            r_dict = {datagram[0]: datagram[1]}
+        print "Sending", repr(r_dict) + "\r\n"
+        self.master.sendLine(json.dumps(r_dict) + "\r\n")
+        self.master.sendLine(json.dumps({}) + "\r\n")
+
         #self.master.sendLine(datagram) #untested
 
 
@@ -224,5 +261,6 @@ if __name__ == '__main__':
     factory.protocol = MasterServerProtocol
 
     reactor.listenTCP(37999, factory)
+
     reactor.run()
 
