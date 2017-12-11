@@ -5,6 +5,7 @@ from sys import stdout
 import json
 import yaml
 import parseMap
+from collections import OrderedDict
 
 import time
 
@@ -74,34 +75,58 @@ class MasterServerProtocol(LineReceiver):
             self.setupMap()
             return self.pathInRadius(lat,lon,meters,exclude_list)#self.sendLine(json.dumps(err))
 
-    def do_dict(self,data):
+    def do_dict(self, data):
         '''There's probably a better way to walk the dictionary.'''
         r_list = []
-        if isinstance(data, dict):
-            for k, v in data.iteritems():
-                if isinstance(k,str) or isinstance(k,unicode):
-                    if not k[0:3] == 'ppp':
-                        print "adding k", k
-                        r_list.append(k.encode('UTF-8'))
-                if isinstance(v, dict):
-                    print "recursing v", v
-                    r_list = r_list + self.do_dict(v)
-                else:
-                    if isinstance(v,str) or isinstance(v,unicode):
-                        print "adding v", v
-                        r_list.append(v.encode('UTF-8'))
-                    else:
-                        print "adding v", v
-                        r_list.append(v)
-            return r_list
+        for k, v in data.items():
+            #print "k,v:", k, v, type(k)
+            if isinstance(k, unicode):
+                if not k.isdigit():
+                    r_list.append(str(k))
+            if isinstance(v, OrderedDict):
+                r_list = r_list + self.do_dict(v)
+                continue
+            else:
+                r_list.append(v)
         return r_list
+    # def do_dict(self,data):
+    #     '''There's probably a better way to walk the dictionary.'''
+    #     r_list = []
+    #     for k, v in data.items():
+    #         r_list.append(k)
+    #         if isinstance(v, OrderedDict):
+    #             r_list.append(self.do_dict(v))
+    #         r_list.append(v)
+
+
+        #for k, v in data.iteritems():
+
+        
+        # if isinstance(data, dict):
+        #     for k, v in data.iteritems():
+        #         if isinstance(k,str) or isinstance(k,unicode):
+        #             if not k[0:3] == 'ppp':
+        #                 print "adding k", k
+        #                 r_list.append(k.encode('UTF-8'))
+        #         if isinstance(v, dict):
+        #             print "recursing v", v
+        #             r_list = r_list + self.do_dict(v)
+        #         else:
+        #             if isinstance(v,str) or isinstance(v,unicode):
+        #                 print "adding v", v
+        #                 r_list.append(v.encode('UTF-8'))
+        #             else:
+        #                 print "adding v", v
+        #                 r_list.append(v)
+        #     return r_list
+        # return r_list
 
     def lineReceived(self, line):#
         #Do protocol here
         print "LINE", line
         jLine = None
         try:
-            jLine = json.loads(line)
+            jLine = json.loads(line, object_pairs_hook=OrderedDict)
         except ValueError:
             print 'Line', line, 'is not JSON'
             return 0
