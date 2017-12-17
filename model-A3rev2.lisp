@@ -210,9 +210,28 @@
        lon          =lon
    ==>
    =goal>
-       state        none
+       state        get-target-direction
+   +retrieval>
+       ISA          waypoint-location
+     - tar_lat      nil
    !eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 0) (cons "2" 3) (cons "3" 22) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =lat) (cons "9" =lon) (cons "10" 50.0) (cons "11" 1) (cons "12" 0)))))))
    ;#TODO Why is this right beside the previous point?
+)
+
+(P get-target-direction
+   =goal>
+       ISA          initialize
+       state        get-target-direction
+   =retrieval>
+       ISA          waypoint-location
+       tar_lat      =tar_lat
+       tar_lon      =tar_lon
+       my_lat       =my_lat
+       my_lon       =my_lon
+   ==>
+   =goal>
+       state        none
+   ;#TODO I need some way to get the direction of the larget (north, s, etc.) 
 )
 
 
