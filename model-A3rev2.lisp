@@ -170,17 +170,40 @@
       value        =waypoint_state
   ==>
   =goal>
-      state        set-takeoff-waypoint
+      state        recall-takeoff-waypoint
   ;=imaginal>
   
   !eval! (setf *msg* (list (cons "Map_Request" (list (cons "method" "getRunwayEnd") (cons "args" (list))))))
 
 )
 
+;the following production is just to make sure the communication is working
+(P recall-takeoff-waypoint
+   =goal>
+       ISA          initialize
+       state        recall-takeoff-waypoint
+   =imaginal>
+       what         "RUNWAY_END"
+       lat          =lat
+       lon          =lon
+   ==>
+   =goal>
+       state        set-takeoff-waypoint
+   =imaginal>
+   +retrieval>
+       ISA          waypoint-state
+    -  value        nil
+
+   ;!output! target
+   ;!eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 1) (cons "2" 0) (cons "3" 16) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 2004.4) (cons "11" 1) (cons "12" 0)))))))
+)
+
 (P set-takeoff-waypoint
    =goal>
        ISA          initialize
        state        set-takeoff-waypoint
+   =retrieval>
+       value        =waypoint_state
    =imaginal>
        what         "RUNWAY_END"
        lat          =lat
@@ -188,11 +211,11 @@
    ==>
    =goal>
        state        none
-   =imaginal>
-
-   !output! target
-   ;!eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 1) (cons "2" 0) (cons "3" 16) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 2004.4) (cons "11" 1) (cons "12" 0)))))))
+   !eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 0) (cons "2" 3) (cons "3" 22) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =lat) (cons "9" =lon) (cons "10" 50.0) (cons "11" 1) (cons "12" 0)))))))
+   ;#TODO Why is this right beside the previous point?
 )
+
+
 
 
 
