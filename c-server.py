@@ -30,7 +30,8 @@ class MasterServerProtocol(LineReceiver):
             self.setupMap()
             return self.mapInfo.get_bearing_and_distance(lat1,lon1,lat2,lon2)
 
-
+    def getRunwayEnd(self):
+        return {"lat":38.97727, "lon":-104.8219822, "what":"RUNWAY_END"}
 
     def connectionMade(self):
         self.udpProtocol = UDPClient()
@@ -147,6 +148,7 @@ class MasterServerProtocol(LineReceiver):
                     msg = method_to_call(**kwargs)
                     print "send33", msg, "from", method
                     self.sendLine(json.dumps(msg))
+                    self.sendLine(json.dumps({}))#This line is needed to flush...
                     return 0
 
 

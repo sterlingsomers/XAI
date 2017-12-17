@@ -73,23 +73,30 @@
 ;; Define the ACT-R model. This will generate a pair of warnings about slots in the goal
 ;; buffer not being accessed from productions; these may be ignored.
 
+
 (clear-all)
 
 (define-model plan-model
 
 (sgp :esc t :lf .05)
+
+
 ;;lat = 38.967163
 ;;lon = -104.81937
 ;;t_lat = 38.99343742021595
 ;;t_lon = -105.05530266366
 (chunk-type initialize state)
-(chunk-type waypoint-location my_lat my_lon tar_lat tar_lon state)
+(chunk-type waypoint-location my_lat my_lon tar_lat tar_lon value)
 (chunk-type relative-location cur-lat cur-lon north north_east east south-east south south_west west north_west)
+(chunk-type runway-gps end-lat end-lon)
+(chunk-type waypoint-state value)
 
 
+;38.97727 x -104.8219822
 (add-dm
  (goal ISA initialize state clear-mission)
- (start-location ISA waypoint-location my_lat 38.967163 my_lon -104.81937 tar_lat 38.993437 tar_lon -105.055303 state 0))
+ (start-location ISA waypoint-location my_lat 38.967163 my_lon -104.81937 tar_lat 38.993437 tar_lon -105.055303 value 0)
+ (run-way ISA runway-gps end-lat 38.97727 end-lon -104.8219822))
 
 
 (P clear-mission
@@ -121,11 +128,11 @@
        state      recall-current-waypoint
    +retrieval>
        ISA         waypoint-location
-       state       0
+       value       0
 
 )
    
-(P set-takeoff-waypoint
+(P set-current-waypoint
    =goal>
        ISA        initialize
        state      recall-current-waypoint
@@ -135,13 +142,76 @@
        my_lon     =cur_lon
        tar_lat    =target_lat
        tar_lon    =target_lon
-       state      =waypoint_state
+       value      =waypoint_state
+   ?imaginal>
+       state      free
    ==>
    =goal>
-       state      none
-   !eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 0) (cons "2" 3) (cons "3" 16) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 50.0) (cons "11" 1) (cons "12" 0)))))))
+       state      determine-takeoff-lat-lon
+
+   +imaginal>
+       ISA        waypoint-state
+       img_lat    =cur_lat
+       img_lon    =cur_lon
+       value      1
+  
+   !eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 1) (cons "2" 0) (cons "3" 16) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 2004.4) (cons "11" 1) (cons "12" 0)))))))
 
 )
+
+(P determine-takeoff-lat-lon
+  =goal>
+      ISA          initialize
+      state        determine-takeoff-lat-lon
+  =imaginal>
+      ISA          waypoint-state
+      img_lat      =lat
+      img_lon      =lon
+      value        =waypoint_state
+  ==>
+  =goal>
+      state        set-takeoff-waypoint
+  ;=imaginal>
+  
+  !eval! (setf *msg* (list (cons "Map_Request" (list (cons "method" "getRunwayEnd") (cons "args" (list))))))
+
+)
+
+(P set-takeoff-waypoint
+   =goal>
+       ISA          initialize
+       state        set-takeoff-waypoint
+   =imaginal>
+       what         "RUNWAY_END"
+       lat          =lat
+       lon          =lon
+   ==>
+   =goal>
+       state        none
+   =imaginal>
+
+   !output! target
+   ;!eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 1) (cons "2" 0) (cons "3" 16) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 2004.4) (cons "11" 1) (cons "12" 0)))))))
+)
+
+
+
+
+;(P set-takeoff-waypoint
+;   =goal>
+;       ISA        initialize
+;       state      takeoff-waypoint
+;   =imaginal>
+;       state      =waypoint_state   
+;   ==>   
+;   =goal>
+;       state      none
+;   =imaginal>
+;       state      2
+;
+;   !eval! (setf *msg* (list (cons "Forward_Message" (list (cons "FLIGHT" (list (cons "SET_MISSION_ITEM" =waypoint_state) (cons "1" 0) (cons "2" 3) (cons "3" 22) (cons "4" 0.0) (cons "5" 0.0) (cons "6" 0.0) (cons "7" 0.0) (cons "8" =cur_lat) (cons "9" =cur_lon) (cons "10" 2004.4) (cons "11" 1) (cons "12" 0)))))))
+;)
+
 
 
 ;;{"Map_Request": {"args": {"lat": 38.967163, "meters": 7300, "lon": -104.81937, "exclude_list": []}, "method": "pathInRadius"}}
@@ -180,7 +250,7 @@ integer is itself a JSON value."
                          (setf result (vh:read-json stream)))
                        (format t "here2")
                        (unless (assoc 'ack result)
-                         (vh:chunkify result :buffer 'imaginal)))
+                         (vh:chunkify result :buffer 'imaginal :time-delta 0)))
                      (format t "here3")
                      ))
                      ;(let (result (read-line stream nil)) (format t "asdf"))))
