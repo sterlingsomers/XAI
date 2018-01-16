@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>multiple-paths1.kml</name>
+	<open>1</open>
+	<Style id="s_ylw-pushpin1">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl1">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Folder>
+		<name>Colorado</name>
+		<open>1</open>
+		<Placemark>
+			<name>mountain-2</name>
+			<description>{&quot;danger&quot;:0.8}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9067564874004,38.98130740969652,0 -104.9161189699269,38.98555422329557,0 -104.9593588225306,38.99307860999328,0 -104.9622185005001,38.99007846345121,0 -104.952646289468,38.97528727163613,0 -104.9302122671177,38.97526417403169,0 -104.906975156417,38.97527392739343,0 -104.9067564874004,38.98130740969652,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>takeoff</name>
+			<LookAt>
+				<longitude>-104.7918366938441</longitude>
+				<latitude>38.82137637714786</latitude>
+				<altitude>0</altitude>
+				<heading>0.01850372028406323</heading>
+				<tilt>0</tilt>
+				<range>46195.12757931036</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<Point>
+				<extrude>1</extrude>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-104.819837,38.967163,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>landing</name>
+			<LookAt>
+				<longitude>-104.7918366938441</longitude>
+				<latitude>38.82137637714786</latitude>
+				<altitude>0</altitude>
+				<heading>0.01850372028406323</heading>
+				<tilt>0</tilt>
+				<range>46195.12757931036</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-105.055302663666,38.99343742021595,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>path-21</name>
+			<description>{&quot;danger&quot;:0.7}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9023455777246,38.97367724879643,0 -104.9511710818889,38.97395536762599,0 -104.9515509057783,38.97037033318367,0 -104.9026043179084,38.97021319833662,0 -104.9023455777246,38.97367724879643,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-22</name>
+			<description>{&quot;danger&quot;:0.2,&quot;links&quot;:[&quot;path-23&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-105.0504588650052,38.98548401942717,0 -105.0302008250098,38.95842996763163,0 -105.0263567910348,38.96122259007198,0 -105.0441999881006,38.98612180655568,0 -105.0504588650052,38.98548401942717,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-23</name>
+			<description>{&quot;danger&quot;:0.4, &quot;links&quot;:[&quot;path-22&quot;,&quot;path-24&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-105.0297903434002,38.95823683244122,0 -105.0271239615679,38.94877739390923,0 -105.0225464630357,38.94966239588651,0 -105.0257652847147,38.96048429251976,0 -105.0297903434002,38.95823683244122,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-24</name>
+			<description>{&quot;danger&quot;:0.4,&quot;links&quot;:[&quot;path-23&quot;, &quot;path-25&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-105.0256175641185,38.94767714508463,0 -104.9727154043553,38.90556361487612,0 -104.9692965657188,38.90738233661205,0 -105.0223880919292,38.94890170343422,0 -105.0256175641185,38.94767714508463,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-25</name>
+			<description>{&quot;danger&quot;:0.2,&quot;links&quot;:[&quot;path-24&quot;,&quot;path-26&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9721012690803,38.90531665085352,0 -104.9723506792951,38.8933170734491,0 -104.9681966563008,38.89533145259133,0 -104.9691285240989,38.9068776048508,0 -104.9721012690803,38.90531665085352,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-27</name>
+			<description>{&quot;danger&quot;:0.35,&quot;links&quot;:[&quot;path-25&quot;,&quot;path-28&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.971164039187,38.8924868550828,0 -104.9627342913596,38.88610602701543,0 -104.9584946402995,38.89111936108716,0 -104.9678669556548,38.89458378828922,0 -104.971164039187,38.8924868550828,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-28</name>
+			<description>{&quot;danger&quot;:0.5,&quot;links&quot;:[&quot;path-27&quot;,&quot;path-29&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9596735984294,38.88775131308999,0 -104.9522045608178,38.88260122243254,0 -104.9495449525494,38.88486855453984,0 -104.9573867528489,38.89055861047157,0 -104.9596735984294,38.88775131308999,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>path-29</name>
+			<description>{&quot;danger&quot;:0.5,&quot;links&quot;:[&quot;path-28&quot;]}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9530002658691,38.88128568880281,0 -104.9201489473046,38.8607462285452,0 -104.9173896475697,38.8661224559889,0 -104.9488456552313,38.88384132606635,0 -104.9530002658691,38.88128568880281,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+		<Placemark>
+			<name>mountain-1</name>
+			<description>{&quot;danger&quot;:0.7}</description>
+			<styleUrl>#m_ylw-pushpin1</styleUrl>
+			<Polygon>
+				<tessellate>1</tessellate>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+							-104.9003533411869,38.96696945088998,0 -104.9468377021398,38.96801300227006,0 -104.9680967972973,38.97074940574046,0 -104.9862602648579,38.9793024838465,0 -104.9988180460737,38.96953849942168,0 -105.0207799805502,38.9802079260745,0 -105.0124667426837,38.94755760696415,0 -104.9715519573078,38.91740054020592,0 -104.9595857412045,38.89517241526307,0 -104.918116438779,38.86984002654469,0 -104.9160735196045,38.90467485678066,0 -104.892209744165,38.89837927238008,0 -104.9003533411869,38.96696945088998,0 
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

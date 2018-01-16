@@ -30,7 +30,8 @@ import json
 
 class KMLHandler():
     def __init__(self, kml_file_path=''):
-        self.kml_file = path.join('multiple-paths1.kml')
+        self.kml_file = path.join('multiple-paths3.kml')
+        #self.kml_file = path.join('multiple-paths1.kml')
         #self.kml_file = path.join('path-1.kml')
         #self.kml_file = path.join('destination-with-mountains.kml')
         with open(self.kml_file) as f:
@@ -170,6 +171,48 @@ class KMLHandler():
                 #paths[path]["centroid"] = self.get_centroid(paths[path]['points'])
         return paths
 
+    def get_closest_path_in_direction(self,lat,lon,direction):
+        possible_paths = []
+        for path in self.polydict:
+            #print "path", path
+            if "mountain" in path:
+                continue
+            centroid = self.get_centroid_by_name(path)
+            bearing_distance = self.get_bearing_and_distance(lat,lon,centroid[0],centroid[1])
+            bearing, distance = self.classify_bearing(bearing_distance['bearing']), bearing_distance['distance']
+            if direction in bearing:
+                possible_paths.append((path,bearing,distance))
+
+        ordered_list = sorted(possible_paths, key=lambda k: k[2])
+        return ordered_list[0][0]
+
+
+    def visible_mountains_in_direction(self,lat,lon,direction):
+        if self.get_mountains_in_direction(lat,lon,direction):
+            return {"mountain":"true"}
+
+    def get_mountains_in_direction(self,lat,lon,direction):
+        mountains = []
+        for path in self.polydict:
+            flag = False
+            if 'mountain' in path:
+                for point in self.polydict[path]['points']:
+                    bearing_distance = self.get_bearing_and_distance(lat,lon,self.polydict[path]['points'][point]['lat'],self.polydict[path]['points'][point]['lon'])
+
+                    bearing_category = self.classify_bearing(bearing_distance['bearing'])
+                    #print bearing_category
+                    if direction in bearing_category:
+
+                        mountains.append(path)
+                        break
+        #print mountains
+        return mountains
+
+
+
+
+
+
     def get_enriched_paths_by_names(self,lat=0,lon=0,list_of_names=0):
         paths = {}
         for path in self.polydict:
@@ -191,6 +234,8 @@ class KMLHandler():
         paths = []
         for path in self.polydict:
             if path in exclude_list:
+                continue
+            if 'mountain' in path:
                 continue
             for point in self.polydict[path]['points']:
                 #print "piont", point, self.polydict[path][point]['lat']
@@ -388,14 +433,29 @@ class KMLHandler():
     def get_centroid(self, path):
         x = [p[0] for p in path]
         y = [p[1] for p in path]
-        return (sum(y) / len(path),sum(x)/len(path))
+        return (sum(x) / len(path),sum(y)/len(path))
+
+    def get_centroid_by_name(self,path):
+        #print "centroid-path", path
+        for apath in self.polydict:
+            if apath == path:
+                latlons = []
+                for point in self.polydict[path]['points']:
+                    #print "point", point
+                    latlons.append((self.polydict[path]['points'][point]['lat'],self.polydict[path]['points'][point]['lon']))
+                    #lats.append(self.polydict[path]['points'][point]['lat'])
+                    #lons.append(self.polydict[path]['points'][point]['lon'])
+        return self.get_centroid(latlons)
+
     
     def get_edge_centers(self, path):
         #The centre of the edges may make more sense
         #especially the edge closest to the previous path
         pass
     
-    
+
+    #def get_connected_paths_to_target_
+
     def intersection(self, lon1, lat1, lon2, lat2):
         segments = []
         for polygon in self.polygons:
@@ -423,6 +483,13 @@ class KMLHandler():
 
 if __name__ == '__main__':
     a = KMLHandler()
+
+    #print "mountains"
+    #for path in a.polydict:
+    #  if "mountain" in path:
+    #       print path
+
+
     #FDOprint a.polydict, type(a.polydict)
     print 'paths', a.paths_in_radius(38.967163,-104.819837,7300)
 
@@ -430,7 +497,12 @@ if __name__ == '__main__':
     print a.classify_bearing(278)
 
 
+
+    print "closest west", a.get_closest_path_in_direction(38.967163,-104.819837,'west')
     #a.get_closest_path_key(38.967163,-104.819837)
+
+
+    print "mountains west", a.get_mountains_in_direction(38.967163,-104.819837,'west')
 
     #this should be west.
     print a.get_bearing_and_distance(38.967163,-104.819837,38.99343742021595,-105.05530266366)
