@@ -70,6 +70,7 @@
       :print nil)
 
 (ql:quickload :voorhees)
+(ql:quickload :bt-semaphore)
 
 ;; Define the ACT-R model. This will generate a pair of warnings about slots in the goal
 ;; buffer not being accessed from productions; these may be ignored.
@@ -271,25 +272,31 @@
 ) ; end define-model
 
 
+
 (defun run-comms (portnumber)
   (let (socket)
     (unwind-protect
         (let ((stream (usocket:socket-stream
                        (setf socket (usocket:socket-connect "127.0.0.1" portnumber :timeout 100)))))
-          (run 1.05)
+          (bt:make-thread
+           (lambda ()
+             (run 1.05)))
+
           (while (= *whileflag* 1)
-            ;;(format t "here")
+            (format t "here")
             (if *msg*
                 
                 (progn
-                  ;;(format t "here2")
+                  (format t "here2")
                   (format t (vh:json-string *msg*))
                   (vh:write-json *msg* stream)
                   (let ((result (vh:read-json stream)))
                     (unless result
                       (setf result (vh:read-json stream)))
+                    (format t "result\n\r")
+                    (format t result)
                     (unless (assoc 'ack result)
-                      (vh:chunkify result :buffer 'imaginal :time-delta 0)))
+                     (vh:chunkify result :buffer 'imaginal :time-delta 0)))
                   ))
             (setf *msg* nil))
           (when socket
